@@ -8,7 +8,11 @@ from PyQt5.QtWidgets import QVBoxLayout
 from PyQt5.QtWidgets import QLabel
 from PyQt5.QtWidgets import QPushButton
 from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QInputDialog
+from Image_Manipulation.artScreen import artScreen
+from Image_Manipulation.randomArt import randomArt
 import stroopy_words
+import record
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
@@ -38,17 +42,27 @@ class MainWindow(QMainWindow):
         self.widget.setLayout(layout1)
         self.setCentralWidget(self.widget)
         
-        btn1.clicked.connect(self.showBaseline)
-        btn2.clicked.connect(self.showDialog)
- 
-    def showBaseline(self):
-        stroopy_words.main()
+        btn1.clicked.connect(self.RecordBaseline)
+        btn2.clicked.connect(self.open_artScreen)
+    
 
-    def showDialog(self):
-        DispDlg = QDialog(self)
-        DispDlg.setWindowTitle("Display")
-        DispDlg.resize(300, 300)
-        DispDlg.exec_()
+    def open_artScreen(self):
+        art_screen_size = [526,526]
+        screen = artScreen(art_screen_size)
+        screen.updateScreen(randomArt(art_screen_size))
+
+    def RecordBaseline(self):
+        default = 120
+        minTime = 5
+        maxTime = 300
+        increment = 5
+        time,ok = QInputDialog.getInt(self, "Enter recording duration", "Time (s):", default, minTime, maxTime, increment)
+        if ok:
+            record.record(time, 'csvtest.txt')
+            stroopy_words.present(time)
+
+    #def showWords(self):
+    #    stroopy_words.present(time)
   
 if __name__ == '__main__':
     app = QApplication(sys.argv)

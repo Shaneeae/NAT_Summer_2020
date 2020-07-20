@@ -8,7 +8,12 @@ from glob import glob
 from random import choice
 from math import floor
 from csv import reader
+from PyQt5.QtWidgets import QApplication
 
+#Get screen resolution
+app = QApplication([])
+screen_resolution = app.desktop().screenGeometry()
+width, height = screen_resolution.width(), screen_resolution.height()
 
 def present(duration=120):
 
@@ -34,7 +39,7 @@ def present(duration=120):
     trials = DataFrame(dict(position=position,
                             timestamp=np.zeros(n_trials)))
 
-    mywin = visual.Window([1536, 864], monitor="testMonitor", units="deg",
+    mywin = visual.Window([width, height], monitor="testMonitor", units="deg",
                           fullscr=True)
 
     word_files = glob(r'stimulus_presentation\words\*.txt')
@@ -56,7 +61,7 @@ def present(duration=120):
         # onset
         pos = trials['position'].iloc[ii]
         word = choice(targets if pos == 1 else nontargets)
-        text = visual.TextStim(win=mywin, text=word, units='pix', font='Arial', height=175, alignHoriz='center')
+        text = visual.TextStim(win=mywin, text=word, units='pix', font='Arial', height=175, alignText='center', anchorHoriz='center')
         text.draw()
 
         timestamp = time()
@@ -77,7 +82,7 @@ def main():
     parser = OptionParser()
 
     parser.add_option("-d", "--duration",
-                      dest="duration", type='int', default=120,
+                      dest="duration", type='int', default=30,
                       help="duration of the recording in seconds.")
 
     (options, args) = parser.parse_args()
